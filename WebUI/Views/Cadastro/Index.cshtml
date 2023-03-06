@@ -1,0 +1,69 @@
+﻿@model IEnumerable<WebUI.Models.TB_CADASTRO>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="card card-full">
+    <div class="card-body p-0">
+        <div class="table-full">
+            <div id="TABLE" class="table-center"></div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialization
+            var jsonInput = { };
+
+            $.ajax(
+                {
+                    type: 'GET',
+                    dataType: 'JSON',
+                    url: 'https://localhost:7245/api/Cadastro',
+                    data: { jsonInput: JSON.stringify(jsonInput) },
+                    success:
+                        function (response) {
+                            // Generate HTML table.
+                            new Tabulator("#TABLE", {
+                                progressiveLoad: "scroll",
+                                data: response,
+                                columns: [
+                                    { title: "INSCRIÇÃO", field: "NRO_INSCRICAO" },
+                                    { title: "NOME", field: "NOME_TIT" },
+                                    { title: "NASCIMENTO", field: "NASC_TIT" },
+                                    { title: "RG", field: "RG_TIT" },
+                                    { title: "CPF", field: "CPF_TIT" },
+                                    { title: "SEXO", field: "SEXO_TIT" },
+                                    { title: "#", formatter: (cell) => { return "<button type='button' class='btn btn-secondary'>Detalhes</button>" }, cellClick: function(e, cell,data){ window.location= "/Cadastro/Details?ID_REGISTRO=" + cell.getRow()._row.data.ID_REGISTRO;} },
+                                    { title: "#", formatter: (cell) => { return "<button type='button' class='btn btn-secondary'>Apagar</button>" }, cellClick: function (e, cell, data) { window.location = "/Cadastro/Delete?ID_REGISTRO=" + cell.getRow()._row.data.ID_REGISTRO; } },
+                                ],
+                                layout: "fitDataFill",
+                            });
+                        },
+                    error:
+                        function (response) {
+                            alert("Error: " + response);
+                        }
+                });
+        });
+
+
+
+
+
+    </script>
+
+}

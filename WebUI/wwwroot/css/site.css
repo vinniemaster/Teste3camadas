@@ -1,0 +1,47 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+#Con {
+	opacity: 0;
+	animation: showMe .75s forwards;
+}
+
+#Dependente {
+	opacity: 0;
+	animation: showMe .75s forwards;
+}
+
+#NEC_ESP_DESCR {
+	opacity: 0;
+	animation: showMe .75s forwards;
+}
+
+#NESC_ESP_CON {
+	opacity: 0;
+	animation: showMe .75s forwards;
+}
+
+@keyframes showMe {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
