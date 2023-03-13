@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -111,6 +112,45 @@ namespace WebUI.Controllers
                 return View(jsonobjet);
             }
             return View();
+        }
+        public ActionResult Export()
+        {
+            HttpClient http = new HttpClient();
+            var response = http.GetAsync("https://localhost:7245/api/Cadastro").Result;
+            //var json = response.Content.ReadAsStringAsync().Result;
+            //var jsonobjet = JsonConvert.DeserializeObject<IEnumerable<TB_CADASTRO>>(json.Replace("\\", "").Replace("[", "").Replace("]", ""));
+
+            using var arquivoExcel = new XLWorkbook();
+            var worksheet = arquivoExcel.AddWorksheet("RELATÓRIO TODOS OS USUÁRIOS");
+            worksheet.Cell("A1").Value = "RELATORIO TODOS OS USUÁRIOS";
+            worksheet.Range("A1:C3").Row(1).Merge();
+            worksheet.Cell("A2").Value = "NOME";
+            worksheet.Cell("B2").Value = "ENDEREÇO";
+            worksheet.Cell("C2").Value = "CEP";
+
+            var linha = 3;
+
+            if(response.IsSuccessStatusCode)
+            {
+                foreach (var item in JsonConvert.DeserializeObject<IEnumerable<TB_CADASTRO>>(response.Content.ReadAsStringAsync().Result))
+                {
+                    worksheet.Cell($"A{linha}").Value = item.NOME_TIT;
+                    worksheet.Cell($"B{linha}").Value = item.ENDERECO;
+                    worksheet.Cell($"C{linha}").Value = item.CEP;
+                }
+            }
+
+            //worksheet.Column("1-3").AdjustToContents();
+
+            var download = new System.IO.MemoryStream();
+            arquivoExcel.SaveAs(download);
+            download.Position = 0;
+            var iResult = new FileStreamResult(download, "application/vnd.openxmlformats-officedocument.download.sheet")
+            {
+                FileDownloadName = "CIRURGIAS REALIZADAS " + DateTime.Now + ".xlsx"
+            };
+
+            return iResult;
         }
 
         // POST: Cadastro/Delete/5
