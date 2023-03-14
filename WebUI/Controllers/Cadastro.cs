@@ -116,9 +116,6 @@ namespace WebUI.Controllers
         public ActionResult Export()
         {
             HttpClient http = new HttpClient();
-            var response = http.GetAsync("https://localhost:7245/api/Cadastro").Result;
-            //var json = response.Content.ReadAsStringAsync().Result;
-            //var jsonobjet = JsonConvert.DeserializeObject<IEnumerable<TB_CADASTRO>>(json.Replace("\\", "").Replace("[", "").Replace("]", ""));
 
             using var arquivoExcel = new XLWorkbook();
             var worksheet = arquivoExcel.AddWorksheet("RELATÓRIO TODOS OS USUÁRIOS");
@@ -147,7 +144,7 @@ namespace WebUI.Controllers
             download.Position = 0;
             var iResult = new FileStreamResult(download, "application/vnd.openxmlformats-officedocument.download.sheet")
             {
-                FileDownloadName = "CIRURGIAS REALIZADAS " + DateTime.Now + ".xlsx"
+                FileDownloadName = "RELATÓRIO TODOS OS USUÁRIOS" + DateTime.Now + ".xlsx"
             };
 
             return iResult;
