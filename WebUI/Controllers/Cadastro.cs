@@ -116,6 +116,7 @@ namespace WebUI.Controllers
         public ActionResult Export()
         {
             HttpClient http = new HttpClient();
+            var response = http.GetAsync("https://localhost:7245/api/Cadastro").Result;
 
             using var arquivoExcel = new XLWorkbook();
             var worksheet = arquivoExcel.AddWorksheet("RELATÓRIO TODOS OS USUÁRIOS");
